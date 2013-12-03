@@ -8,7 +8,7 @@ module OmniAuth
       
       option :client_options, {
         :access_token_path  => 'http://localhost/magento/oauth/token',
-        :authorize_path     => 'http://localhost/magento/oauth/authorize',
+        :authorize_path     => 'http://localhost/magento/admin/oAuth_authorize',
         :request_token_path => 'http://localhost/magento/oauth/initiate',
         :signature_method   => 'PLAINTEXT'
       }
