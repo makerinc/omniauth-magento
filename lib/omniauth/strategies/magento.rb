@@ -7,9 +7,9 @@ module OmniAuth
       #args [:consumer_key, :consumer_secret, :site_id]
       
       option :client_options, {
-        :access_token_path  => 'http://localhost:8888/magento/oauth/token',
-        :authorize_path     => 'http://localhost:8888/magento/oauth/authorize',
-        :request_token_path => 'http://localhost:8888/magento/oauth/initiate',
+        :access_token_path  => 'http://localhost/magento/oauth/token',
+        :authorize_path     => 'http://localhost/magento/oauth/authorize',
+        :request_token_path => 'http://localhost/magento/oauth/initiate',
         :signature_method   => 'PLAINTEXT'
       }
     end
