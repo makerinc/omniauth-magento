@@ -10,7 +10,8 @@ module OmniAuth
         :access_token_path  => 'http://localhost/magento/oauth/token',
         :authorize_path     => 'http://localhost/magento/admin/oAuth_authorize',
         :request_token_path => 'http://localhost/magento/oauth/initiate',
-        :signature_method   => 'PLAINTEXT'
+        :signature_method   => 'PLAINTEXT',
+        :scheme => :query_string
       }
     end
   end
