@@ -7,11 +7,10 @@ module OmniAuth
       #args [:consumer_key, :consumer_secret, :site_id]
       
       option :client_options, {
-        :access_token_path  => 'http://localhost/magento/oauth/token',
-        :authorize_path     => 'http://localhost/magento/admin/oAuth_authorize',
-        :request_token_path => 'http://localhost/magento/oauth/initiate',
-        :signature_method   => 'HMAC-SHA1',
-        :scheme => :header,
+        :access_token_path  => 'oauth/token',
+        :authorize_path     => 'oauth/authorize',
+        :request_token_path => 'oauth/initiate',
+        :scheme => :query_string,
         :oauth_callback => "oob"
       }
     end
