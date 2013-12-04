@@ -1,16 +1,16 @@
 require 'omniauth/strategies/oauth'
-require 'oauth/signature/plaintext'
 
 module OmniAuth
   module Strategies
     class Magento < OmniAuth::Strategies::OAuth
-
-      args [:consumer_key, :consumer_secret, :site]
+      # Give your strategy a name.
+      option :name, "magento"
       
       option :client_options, {
         :access_token_path  => 'oauth/token',
         :authorize_path     => 'oauth/authorize',
-        :request_token_path => 'oauth/initiate'
+        :request_token_path => 'oauth/initiate',
+        :site               => ENV['MAGENTO_URL']
       }
     end
   end
