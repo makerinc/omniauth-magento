@@ -10,7 +10,7 @@ module OmniAuth
         :access_token_path  => 'oauth/token',
         :authorize_path     => 'oauth/authorize',
         :request_token_path => 'oauth/initiate',
-        :scheme => :query_string,
+        :scheme => "query_string",
         :oauth_callback => "oob"
       }
     end
