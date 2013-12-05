@@ -12,8 +12,9 @@ An Omniauth strategy for Magento. Works only with the newer Magento REST api (no
 
 ### Setting up Rails
 
+Parts of these instructions are based on these [OmniAuth instructions](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview), which you can read in case you get stuck.
+
 * Install Devise if it's not installed
-* Read these [OmniAuth instructions](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview)
 * Load this library into your Gemfile: `gem "omniauth-magento", github: "Zookal/omniauth-magento"`
 * Run `bundle install`
 * Configure config/initializers/devise.rb:
