@@ -7,10 +7,10 @@ module OmniAuth
       #option :name, "magento"
       
       option :client_options, {
-        :access_token_path  => "oauth/token",
-        :authorize_path     => "oauth/authorize",
-        :request_token_path => "oauth/initiate",
-        :site_id            => "http://localhost/magento/"
+        :access_token_path  => "/oauth/token",
+        :authorize_path     => "/oauth/authorize",
+        :request_token_path => "/oauth/initiate",
+        :site_id            => "http://localhost/magento"
       }
     end
   end
