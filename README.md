@@ -56,7 +56,7 @@ end
 ```
 class User < ActiveRecord::Base  
   devise :database_authenticatable, :registerable, :recoverable,
-         :rememberable, :trackable, :validatable, :timeoutable
+         :rememberable, :trackable, :validatable, :timeoutable,
          :omniauthable, :omniauth_providers => [:magento]  
 
   def self.find_for_magento_oauth(auth, signed_in_resource=nil)
