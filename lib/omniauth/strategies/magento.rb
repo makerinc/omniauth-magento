@@ -14,7 +14,7 @@ module OmniAuth
       }
       
       # set uid
-      uid { @raw_info.keys.first.to_i }
+      uid { raw_info.keys.first.to_i }
 
       # set additional info
       info do
