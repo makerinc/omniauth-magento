@@ -17,15 +17,15 @@ Parts of these instructions are based on these [OmniAuth instructions](https://g
 * Install [Devise](https://github.com/plataformatec/devise) if you haven't installed it
 * Load this library into your Gemfile: `gem "omniauth-magento", github: "Zookal/omniauth-magento"`
 * Run `bundle install`
-* Configure config/initializers/devise.rb:
+* Modify config/initializers/devise.rb:
 
 ```
 Devise.setup do |config|
   # deactivate SSL on development environment
   OpenSSL::SSL::VERIFY_PEER ||= OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
-  # example:
-  # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }
   config.omniauth :magento, ENTER_YOUR_MAGENTO_CONSUMER_KEY, ENTER_YOUR_MAGENTO_CONSUMER_SECRET, { :client_options =>  { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
+  # example:
+  # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
 
 * Make sure you have the columns first_name, last_name, magento_id, email in your User table
