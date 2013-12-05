@@ -6,7 +6,7 @@ module OmniAuth
     class Magento < OmniAuth::Strategies::OAuth
       option :name, "magento"
       
-      args[:consumer_key, :consumer_secret, :site]
+      #args[:consumer_key, :consumer_secret, :site]
       
       option :client_options, {
         :access_token_path  => "/oauth/token",
