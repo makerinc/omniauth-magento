@@ -10,10 +10,17 @@ An Omniauth strategy for Magento. Works only with the newer Magento REST api (no
 * In the Magento Admin backend, go to System > Web Services > REST Roles, select Customer, and tick "Retrieve" under "Customer"
 * In the Magento Admin backend, go to System > Web Services > REST Attributes, select Customer, and tick "Email", "First name" and "Last name" under "Customer" > "Read".
 
+### Setting up ENV variables
+
+This step is optional, however, I recommend it for two reasons:
+1. You don't need to fork this repo to hardcode the URL of your Magento in omniauth-magento/lib/omniauth/strategies/magento.rb
+2. You can reuse this strategy for multiple environments pointing to different URLs of Magento installations
+3. You avoid the bad practice of submitting sensitive information to Github or whatever tool you use version control
+
 ### Setting up Rails
 
 * Install Devise if it's not installed
-* Read [OmniAuth instructions](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview)
+* Read these [OmniAuth instructions](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview)
 * Load this library into your Gemfile: `gem "omniauth-magento", github: "Zookal/omniauth-magento"`
 * Run `bundle install`
 * Configure config/initializers/devise.rb:
@@ -25,7 +32,8 @@ Devise.setup do |config|
   config.omniauth :magento, ENTER_YOUR_MAGENTO_CONSUMER_KEY, ENTER_YOUR_MAGENTO_CONSUMER_SECRET
 ```
 
-* Make sure you have columns first_name, last_name, magento_id, email in your User table
+* Create an ENV variable for MAGENTO_URL (called
+* Make sure you have the columns first_name, last_name, magento_id, email in your User table
 * Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 * Add / replace this line in your routes.rb `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
 * In your folder controllers, create a subfolder users
