@@ -4,7 +4,7 @@ module OmniAuth
   module Strategies
     class Magento < OmniAuth::Strategies::OAuth
       # Give your strategy a name.
-      option :name, "magento"
+      #option :name, "magento"
       
       option :client_options, {
         :access_token_path  => "oauth/token",
