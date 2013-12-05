@@ -7,8 +7,8 @@ An Omniauth strategy for Magento. Works only with the newer Magento REST api (no
 ### Setting up Magento
 
 * [Set up a consumer in Magento](http://www.magentocommerce.com/api/rest/authentication/oauth_configuration.html) and write down consumer key and consumer secret
-* In the Magento Admin backend, go to System > Web Services > REST Roles, select Customer, and tick "Retrieve" under "Customer"
-* In the Magento Admin backend, go to System > Web Services > REST Attributes, select Customer, and tick "Email", "First name" and "Last name" under "Customer" > "Read".
+* In the Magento Admin backend, go to `System > Web Services > REST Roles, select Customer`, and tick `Retrieve` under `Customer`
+* In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Customer`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`.
 
 ### Setting up Rails
 
@@ -17,7 +17,7 @@ Parts of these instructions are based on these [OmniAuth instructions](https://g
 * Install [Devise](https://github.com/plataformatec/devise) if you haven't installed it
 * Load this library into your Gemfile: `gem "omniauth-magento", github: "Zookal/omniauth-magento"`
 * Run `bundle install`
-* Modify config/initializers/devise.rb:
+* Modify `config/initializers/devise.rb`:
 
 ```
 Devise.setup do |config|
@@ -28,11 +28,11 @@ Devise.setup do |config|
   # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
 
-* Make sure you have the columns first_name, last_name, magento_id, email in your User table
+* Make sure you have the columns `first_name`, `last_name`, `magento_id` and `email` in your `User` table
 * Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
-* Add / replace this line in your routes.rb `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
-* In your folder controllers, create a subfolder users
-* In that subfolder app/controllers/users/omniauth_callbacks_controller.rb, create a file with the following code (from Devise wiki linked above):
+* Add / replace this line in your `routes.rb` `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
+* In your folder `controllers`, create a subfolder `users`
+* In that subfolder `app/controllers/users/`, create a file `omniauth_callbacks_controller.rb` with the following code (from Devise wiki linked above):
 
 ```
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
@@ -79,8 +79,8 @@ end
 
 * Start your Rails server
 * Start your Magento server
-* Log into Magento with a Customer (not Admin) account
-* In your Rails app, Go to the view where you pasted this line `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
+* Log into Magento with a customer (not admin) account
+* In your Rails app, go to the view where you pasted this line `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 * Click on the link
 * You now should be directed to a Magento view where you are prompted to authorize access to the Magento user account
 * Once you have confirmed, you should get logged into Rails and redirected to the callback URL specified above. The User model should also create a database entry when the user logs in for the first time.
