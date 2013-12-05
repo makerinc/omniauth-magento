@@ -14,33 +14,23 @@ module OmniAuth
         :site               => ENV["MAGENTO_URL"]
       }
       
+      # set uid
       uid { raw_info.id }
 
+      # set additional info
       info do
         {
-          'name' => raw_info.name,
-          'username' => raw_info.username,
+          'first_name' => raw_info.firstname,
+          'last_name' => raw_info.lastname,
+          'email' => raw_info.email
         }
       end
 
-      extra do
-        { :raw_info => raw_info }
-      end
-
+      # get info about current user
       def raw_info
-        require 'pry'; binding.pry
-        #@raw_info ||= MultiJson.decode(access_token.get('/1/account/info').body)
-        #access_token.options[:parse] = :json
-
-        ## This way is not working right now, do it the longer way
-        ## for the time being
-
-        ##@raw_info ||= access_token.get('/ap/user/profile').parsed
-
-        #url = :sit_id
-        #params = {:params => { :access_token => access_token.token}}
-        #@raw_info ||= access_token.client.request(:get, url, params).parsed
-      end
+        @raw_info ||= MultiJson.decode(access_token.get('/api/rest/customers').body)
+        binding.pry
+      end    
     end
   end
 end
