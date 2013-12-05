@@ -51,7 +51,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 end
 ```
 
-* Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and to contain the `find_for_magento_oauth` method
+* Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and to contain the `find_for_magento_oauth` method (from Devise wiki linked above)
 
 ```
 class User < ActiveRecord::Base  
