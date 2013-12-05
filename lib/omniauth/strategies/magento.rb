@@ -10,7 +10,7 @@ module OmniAuth
         :access_token_path  => "/oauth/token",
         :authorize_path     => "/oauth/authorize",
         :request_token_path => "/oauth/initiate",
-        :site            => "http://localhost/magento"
+        :site               => ENV["MAGENTO_URL"]
       }
     end
   end
