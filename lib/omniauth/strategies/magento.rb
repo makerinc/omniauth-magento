@@ -6,13 +6,10 @@ module OmniAuth
     class Magento < OmniAuth::Strategies::OAuth
       option :name, "magento"
       
-      #args[:consumer_key, :consumer_secret, :site]
-      
       option :client_options, {
         :access_token_path  => "/oauth/token",
         :authorize_path     => "/oauth/authorize",
         :request_token_path => "/oauth/initiate",
-        :site               => site # ENV["MAGENTO_URL"]
       }
       
       # set uid
