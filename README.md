@@ -71,3 +71,13 @@ class User < ActiveRecord::Base
   end         
 end
 ```
+
+### Authenticating
+
+* Start your Rails server
+* Start your Magento server
+* Log into Magento with a Customer (not Admin) account
+* In your Rails app, Go to the view where you pasted this line `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
+* Click on the link
+* You now should be directed to a Magento view where you are prompted to authorize access to the Magento user account
+* Once you have confirmed, you should get logged into Rails and redirected to the callback URL specified above. The User model should also create a database entry when the user logs in for the first time.
