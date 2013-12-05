@@ -7,7 +7,7 @@ An Omniauth strategy for Magento. Works only with the newer Magento REST api (no
 ### Setting up Magento
 
 * [Set up a consumer in Magento](http://www.magentocommerce.com/api/rest/authentication/oauth_configuration.html) and write down consumer key and consumer secret
-* In the Magento Admin backend, go to `System > Web Services > REST Roles, select Customer`, and tick `Retrieve` under `Customer`
+* In the Magento Admin backend, go to `System > Web Services > REST Roles`, select `Customer`, and tick `Retrieve` under `Customer`
 * In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Customer`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`.
 
 ### Setting up Rails
