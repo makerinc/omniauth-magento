@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Omniauth::Magento::VERSION
   spec.summary       = 'Omniauth strategy for Magento'
   spec.homepage      = ''
-  spec.authors       = ['Chris Baynes', 'Daniel Mahlow']
+  spec.authors       = ['Chris Baynes', 'Daniel Mahlow', 'Michael Imstepf']
 
   spec.require_paths = ['lib']
 
