@@ -7,9 +7,12 @@ Gem::Specification.new do |spec|
   spec.name          = 'omniauth-magento'
   spec.version       = Omniauth::Magento::VERSION
   spec.summary       = 'Omniauth strategy for Magento'
-  spec.homepage      = ''
-  spec.authors       = ['Chris Baynes', 'Daniel Mahlow', 'Michael Imstepf']
+  spec.homepage      = 'https://github.com/Zookal/omniauth-magento'
+  spec.email         = "michael.imstepf@gmail.com"
+  spec.authors       = ['Michael Imstepf', 'Chris Baynes', 'Daniel Mahlow']
+  spec.license       = "MIT"
 
+  spec.files         = `git ls-files`.split("\n")
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bundler', '~> 1.3'
