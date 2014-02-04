@@ -6,11 +6,19 @@ module OmniAuth
     class Magento < OmniAuth::Strategies::OAuth
       option :name, "magento"
       
-      option :client_options, {
-        :access_token_path  => "/oauth/token",
-        :authorize_path     => "/oauth/authorize",
-        :request_token_path => "/oauth/initiate",
-      }
+      if admin
+        option :client_options, {
+          :access_token_path  => "/oauth/token",
+          :authorize_path     => "/oauth/authorize",
+          :request_token_path => "/oauth/initiate",
+        }
+      else
+        option :client_options, {
+          :access_token_path  => "/oauth/token",
+          :authorize_path     => "/admin/oauth_authorize",
+          :request_token_path => "/oauth/initiate",
+        }
+      end
       
       # set uid
       uid { raw_info.keys.first.to_i }
