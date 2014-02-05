@@ -37,9 +37,9 @@ Devise.setup do |config|
   # deactivate SSL on development environment
   OpenSSL::SSL::VERIFY_PEER ||= OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
   config.omniauth :magento,
-    ENTER_YOUR_MAGENTO_CONSUMER_KEY,
-    ENTER_YOUR_MAGENTO_CONSUMER_SECRET,
-    { :client_options => { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
+    "ENTER_YOUR_MAGENTO_CONSUMER_KEY",
+    "ENTER_YOUR_MAGENTO_CONSUMER_SECRET",
+    { :client_options => { :site => "ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH" } }
   # example:
   # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
@@ -126,4 +126,29 @@ Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_au
 * In your Rails app, go to the view where you pasted this line `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 * Click on the link
 * You now should be directed to a Magento view where you are prompted to authorize access to the Magento user account
-* Once you have confirmed, you should get logged into Rails and redirected to the Rails callback URL specified above. The user should now have `magento_id`, `magento_token` and `magento_secret` stored. 
+* Once you have confirmed, you should get logged into Rails and redirected to the Rails callback URL specified above. The user should now have `magento_id`, `magento_token` and `magento_secret` stored.
+
+### Making API calls
+
+* Create a class that uses `magento_token` and `magento_secret` to do API calls. Example:
+```
+class MagentoInspector
+  require "oauth"
+  require "omniauth"
+  require "multi_json"
+
+  def initialize
+    @access_token = prepare_access_token(current_user) # or pass user in initialize method 
+    @response = MultiJson.decode(@access_token.get("/api/rest/customers").body) # or pass query in initialize method, make sure privileges and attributes are enabled for query (see section at top)
+  end
+
+private
+
+  # from http://behindtechlines.com/2011/08/using-the-tumblr-api-v2-on-rails-with-omniauth/
+  def prepare_access_token(user)
+    consumer = OAuth::Consumer.new("ENTER_YOUR_MAGENTO_CONSUMER_KEY", "ENTER_YOUR_MAGENTO_CONSUMER_SECRET", {:site => "ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH"})
+    token_hash = {:oauth_token => user.magento_token, :oauth_token_secret => user.magento_secret}
+    access_token = OAuth::AccessToken.from_hash(consumer, token_hash)
+  end
+end
+```
