@@ -67,7 +67,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # You need to implement the method below in your model (e.g. app/models/user.rb)
     @user = User.find_for_magento_oauth(request.env["omniauth.auth"], current_user)
 
-    if @user.persisted?
+    if @user && @user.persisted?
       sign_in_and_redirect @user, :event => :authentication #this will throw if @user is not activated
       set_flash_message(:notice, :success, :kind => "magento") if is_navigational_format?
     else
@@ -90,7 +90,7 @@ Here's an example of useful Magento information you can store in your `User` tab
 
 Optional: You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` gem for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`).
 
-Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and create a method to save retrieved information after successfully authenticating.
+Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and create a method to save retrieved information after successfully authenticating. The method below can be shortened if only either the Customer API or the Admin API are used.
 
 ```
 class User < ActiveRecord::Base  
@@ -98,27 +98,48 @@ class User < ActiveRecord::Base
          :rememberable, :trackable, :validatable, :timeoutable,
          :omniauthable, :omniauth_providers => [:magento]  
 
-  def self.find_for_magento_oauth(auth, signed_in_resource=nil)
-    user = User.find_by(email: auth.info.email)
-    if !user
-      user = User.create!(
-        first_name: auth.info.first_name,                           
-        last_name:  auth.info.last_name,
-        magento_id: auth.uid,
-        magento_token: auth.credentials.token,
-        magento_secret: auth.credentials.secret,
-        email:      auth.info.email,
-        password:   Devise.friendly_token[0,20]
-      )
-    else
-      user.update!(
-        magento_id: auth.uid,
-        magento_token: auth.credentials.token,
-        magento_secret: auth.credentials.secret
-      )
-    end    
-    user
-  end         
+  def self.find_for_magento_oauth(auth, signed_in_resource=nil)    
+    # update logged in user
+    if signed_in_resource
+      user = signed_in_resource
+      update_user_with_magento_data(auth, user)
+    # create new user if user details are known (not available through Admin API)
+    elsif authenticated_through_customer_api?(auth)
+      user = User.find_by(email: auth.info.email)
+      create_user_with_magento_data(auth)
+    # log authentication details from Magento if user details are not known (not signed in and authenticated through Admin API)
+    else 
+      puts "MAGENTO_TOKEN: #{magento_token}"
+      puts "MAGENTO_SECRET: #{magento_secret}" 
+    end
+    user || nil
+  end
+
+private
+  
+  def self.authenticated_through_customer_api?(auth)
+    auth.info.present?
+  end
+
+  def self.update_user_with_magento_data(auth, user)
+    user.update!(
+      magento_id: auth.try(:uid), # doesn't exist for Admin API
+      magento_token: auth.credentials.token,
+      magento_secret: auth.credentials.secret
+    )
+  end
+
+  def self.create_user_with_magento_data(auth)
+    user = User.create!(
+      first_name: auth.info.first_name,                           
+      last_name:  auth.info.last_name,
+      magento_id: auth.uid,
+      magento_token: auth.credentials.token,
+      magento_secret: auth.credentials.secret,
+      email:      auth.info.email,
+      password:   Devise.friendly_token[0,20]
+    )
+  end          
 end
 ```
 
