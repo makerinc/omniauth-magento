@@ -79,6 +79,7 @@ Make sure you have the columns
 * `magento_id`
 * `magento_token`
 * `magento_secret`
+
 in your `User` table.
 
 You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` gem for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`).
