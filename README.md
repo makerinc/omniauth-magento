@@ -44,10 +44,10 @@ Devise.setup do |config|
   # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
 
-* optional: If you want to use the Admin API (as opposed to the Customer API), you need to specify the `authorize_path` like so:
+* optional: If you want to use the Admin API (as opposed to the Customer API), you need to overwrite the default `authorize_path` like so:
 
 ```
-{ :client_options => { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH, authorize_path: "/admin/oauth_authorize" } }
+{ :client_options => { :authorize_path => "/admin/oauth_authorize", :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
 ```
 
 * In your folder `controllers`, create a subfolder `users`
