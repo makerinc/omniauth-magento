@@ -51,7 +51,7 @@ Devise.setup do |config|
 ```
 
 * In your folder `controllers`, create a subfolder `users`
-* In that subfolder `app/controllers/users/`, create a file `omniauth_callbacks_controller.rb` with the following [code](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview):
+* In that subfolder `app/controllers/users/`, create a file `omniauth_callbacks_controller.rb` with the following code:
 
 ```
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
@@ -72,7 +72,7 @@ end
 
 #### User model & table
 
-Make sure you have the columns
+Here's an example of useful Magento information you can store in your `User` table once you have created these columns:
 * `email`
 * `first_name`
 * `last_name`
@@ -80,11 +80,9 @@ Make sure you have the columns
 * `magento_token`
 * `magento_secret`
 
-in your `User` table.
-
 Optional: You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` gem for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`).
 
-Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and create a [method to save retrieved information after successfully authenticating](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview).
+Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and create a method to save retrieved information after successfully authenticating.
 
 ```
 class User < ActiveRecord::Base  
