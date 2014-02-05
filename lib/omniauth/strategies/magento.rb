@@ -17,13 +17,15 @@ module OmniAuth
 
       # set additional info
       info do
-        if options[:client_options][:authorize_path] == "/oauth/authorize"
+        if options.client_options.authorize_path == "/oauth/authorize"
           {
             'first_name' => raw_info.values.first["firstname"],
             'last_name' => raw_info.values.first["lastname"],
             'email' => raw_info.values.first["email"],
             'info' => raw_info
           }
+        else
+          {}
         end
       end
 
