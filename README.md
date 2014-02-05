@@ -82,7 +82,7 @@ Make sure you have the columns
 
 in your `User` table.
 
-You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` gem for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`).
+Optional: You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` gem for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`).
 
 Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and create a [method to save retrieved information after successfully authenticating](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview).
 
@@ -128,4 +128,4 @@ Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_au
 * In your Rails app, go to the view where you pasted this line `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 * Click on the link
 * You now should be directed to a Magento view where you are prompted to authorize access to the Magento user account
-* Once you have confirmed, you should get logged into Rails and redirected to the callback URL specified above. The User model should also create a database entry when the user logs in for the first time.
+* Once you have confirmed, you should get logged into Rails and redirected to the Rails callback URL specified above. The user should now have `magento_id`, `magento_token` and `magento_secret` stored. 
