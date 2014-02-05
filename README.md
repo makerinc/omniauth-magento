@@ -1,6 +1,6 @@
 # Omniauth::Magento
 
-An Omniauth strategy for Magento. Works only with the newer Magento REST api (not SOAP).
+An Omniauth strategy for Magento with detailed instructions on how to use it with Rails. Works only with the newer Magento REST api (not SOAP).
 
 ## Instructions on how to use with Rails
 
@@ -152,6 +152,6 @@ private
   end
 end
 ```
-* Make sure, Rails loads files in the folder where this file is placed. For the `lib` folder, put this in `config/application.rb`: `config.autoload_paths += Dir["#{config.root}/lib/**/"]`
+* Make sure Rails loads files in the folder where this class is placed. For the `lib` folder, put this in `config/application.rb`: `config.autoload_paths += Dir["#{config.root}/lib/**/"]`
 * Perform query `MagentoInspector.new`
 * Extend class to suit your needs
