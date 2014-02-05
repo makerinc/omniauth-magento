@@ -20,7 +20,8 @@ module OmniAuth
         {
           'first_name' => raw_info.values.first["firstname"],
           'last_name' => raw_info.values.first["lastname"],
-          'email' => raw_info.values.first["email"]
+          'email' => raw_info.values.first["email"],
+          'info' => raw_info
         }
       end
 
