@@ -7,7 +7,7 @@ module OmniAuth
       option :name, "magento"
       option :type, "customer"
 
-      if option[:type] == "customer"
+      if options[:type] == "customer"
         option :client_options, {
           :request_token_path => "/oauth/initiate",          
           :authorize_path     => "/oauth/authorize",          
