@@ -152,3 +152,5 @@ private
   end
 end
 ```
+* Perform query `MagentoInspector.new`
+* Extend class to suit your needs
