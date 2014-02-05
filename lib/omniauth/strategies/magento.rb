@@ -11,28 +11,28 @@ module OmniAuth
         :authorize_path     => "/oauth/authorize",          
         :access_token_path  => "/oauth/token"
       }
-      
-      # set uid
-      uid { raw_info.keys.first.to_i }
+            
+      # when colling Customer (not Admin) API, Magento returns user credentials for logged in Magento user
+      # these credentials can then be used to create a new user in the Rails app
+      # won't work with Admin API since /customers will return all customers
+      unless options.client_options.authorize_path == "/admin/oauth_authorize"
+        # set uid
+        uid { raw_info.keys.first.to_i }
 
-      # set additional info
-      info do
-        if options.client_options.authorize_path == "/oauth/authorize"
+        # set additional info
+        info do
           {
             'first_name' => raw_info.values.first["firstname"],
             'last_name' => raw_info.values.first["lastname"],
-            'email' => raw_info.values.first["email"],
-            'info' => raw_info
+            'email' => raw_info.values.first["email"]            
           }
-        else
-          {}
         end
-      end
 
-      # get info about current user
-      def raw_info
-        @raw_info ||= MultiJson.decode(access_token.get('/api/rest/customers').body)
-      end    
+        # get info about current user
+        def raw_info
+          @raw_info ||= MultiJson.decode(access_token.get('/api/rest/customers').body)
+        end
+      end        
     end
   end
 end
