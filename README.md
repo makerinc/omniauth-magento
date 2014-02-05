@@ -130,7 +130,7 @@ Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_au
 
 ### Making API calls
 
-* Create a class that uses `magento_token` and `magento_secret` to do API calls. Example:
+* Create a class that uses `magento_token` and `magento_secret` to do API calls for instance in `lib/magento_inspector.rb`. Example:
 ```
 class MagentoInspector
   require "oauth"
@@ -152,5 +152,6 @@ private
   end
 end
 ```
+* Make sure, Rails loads files in the folder where this file is placed. For the `lib` folder, put this in `config/application.rb`: `config.autoload_paths += Dir["#{config.root}/lib/**/"]`
 * Perform query `MagentoInspector.new`
 * Extend class to suit your needs
