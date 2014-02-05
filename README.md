@@ -6,9 +6,17 @@ An Omniauth strategy for Magento. Works only with the newer Magento REST api (no
 
 ### Setting up Magento
 
+#### Consumer key & secret
+
 * [Set up a consumer in Magento](http://www.magentocommerce.com/api/rest/authentication/oauth_configuration.html) and write down consumer key and consumer secret
-* In the Magento Admin backend, go to `System > Web Services > REST Roles`, select `Customer`, and tick `Retrieve` under `Customer`
-* In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Customer`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`.
+
+#### Privileges
+
+* In the Magento Admin backend, go to `System > Web Services > REST Roles`, select `Customer`, and tick `Retrieve` under `Customer`. Add more privileges as needed.
+
+#### Attributes
+
+* In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Customer`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`. Add more attributes as needed.
 
 ### Setting up Rails
 
@@ -28,7 +36,7 @@ Devise.setup do |config|
   # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
 
-* Make sure you have the columns `first_name`, `last_name`, `magento_id` and `email` in your `User` table
+* Make sure you have the columns `email`, `first_name`, `last_name`, `magento_id`, `magento_token` and `magento_secret` in your `User` table. You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`
 * Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 * Add / replace this line in your `routes.rb` `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
 * In your folder `controllers`, create a subfolder `users`
