@@ -25,20 +25,31 @@ Parts of these instructions are based on these [OmniAuth instructions](https://g
 #### Devise
 
 * Install [Devise](https://github.com/plataformatec/devise) if you haven't installed it
-* Load this library into your Gemfile: `gem "omniauth-magento"`
-* Run `bundle install`
+* Add / replace this line in your `routes.rb` `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
+
+#### Magento oAuth strategy
+
+* Load this library into your Gemfile `gem "omniauth-magento"` and run `bundle install`
 * Modify `config/initializers/devise.rb`:
 
 ```
 Devise.setup do |config|
   # deactivate SSL on development environment
   OpenSSL::SSL::VERIFY_PEER ||= OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
-  config.omniauth :magento, ENTER_YOUR_MAGENTO_CONSUMER_KEY, ENTER_YOUR_MAGENTO_CONSUMER_SECRET, { :client_options =>  { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
+  config.omniauth :magento,
+    ENTER_YOUR_MAGENTO_CONSUMER_KEY,
+    ENTER_YOUR_MAGENTO_CONSUMER_SECRET,
+    { :client_options => { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
   # example:
   # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
 
-* Add / replace this line in your `routes.rb` `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
+* optional: If you want to use the Admin API (as opposed to the Customer API), you need to specify the `authorize_path` like so:
+
+```
+{ :client_options => { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH, authorize_path: "/admin/oauth_authorize" } }
+```
+
 * In your folder `controllers`, create a subfolder `users`
 * In that subfolder `app/controllers/users/`, create a file `omniauth_callbacks_controller.rb` with the following [code](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview):
 
@@ -107,7 +118,6 @@ end
 #### Link to start authentication
 
 Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
-
 
 ### Authenticating
 
