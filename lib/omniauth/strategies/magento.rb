@@ -7,22 +7,19 @@ module OmniAuth
       option :name, "magento"
       option :type, "customer"
 
-binding.pry
-      #if admin
+      if option[:type] == "customer"
         option :client_options, {
-          :access_token_path  => "/oauth/token",
-          :authorize_path     => "/oauth/authorize",
-          :request_token_path => "/oauth/initiate"
+          :request_token_path => "/oauth/initiate",          
+          :authorize_path     => "/oauth/authorize",          
+          :access_token_path  => "/oauth/token"
         }
-=begin      
       else
         option :client_options, {
-          :access_token_path  => "/oauth/token",
+          :request_token_path => "/oauth/initiate",          
           :authorize_path     => "/admin/oauth_authorize",
-          :request_token_path => "/oauth/initiate",
+          :access_token_path  => "/oauth/token"
         }
       end
-=end      
       
       # set uid
       uid { raw_info.keys.first.to_i }
