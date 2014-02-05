@@ -1,38 +1,57 @@
 # Omniauth::Magento
 
-An Omniauth strategy for Magento. Works only with the newer Magento REST api (not SOAP).
+An Omniauth strategy for Magento with detailed instructions on how to use it with Rails. Works only with the newer Magento REST api (not SOAP).
 
 ## Instructions on how to use with Rails
 
 ### Setting up Magento
 
-* [Set up a consumer in Magento](http://www.magentocommerce.com/api/rest/authentication/oauth_configuration.html) and write down consumer key and consumer secret
-* In the Magento Admin backend, go to `System > Web Services > REST Roles`, select `Customer`, and tick `Retrieve` under `Customer`
-* In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Customer`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`.
+#### Consumer key & secret
+
+[Set up a consumer in Magento](http://www.magentocommerce.com/api/rest/authentication/oauth_configuration.html) and write down consumer key and consumer secret
+
+#### Privileges
+
+In the Magento Admin backend, go to `System > Web Services > REST Roles`, select `Customer`, and tick `Retrieve` under `Customer`. Add more privileges as needed.
+
+#### Attributes
+
+In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Customer`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`. Add more attributes as needed.
 
 ### Setting up Rails
 
 Parts of these instructions are based on these [OmniAuth instructions](https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview), which you can read in case you get stuck.
 
+#### Devise
+
 * Install [Devise](https://github.com/plataformatec/devise) if you haven't installed it
-* Load this library into your Gemfile: `gem "omniauth-magento"`
-* Run `bundle install`
+* Add / replace this line in your `routes.rb` `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
+
+#### Magento oAuth strategy
+
+* Load this library into your Gemfile `gem "omniauth-magento"` and run `bundle install`
 * Modify `config/initializers/devise.rb`:
 
 ```
 Devise.setup do |config|
   # deactivate SSL on development environment
   OpenSSL::SSL::VERIFY_PEER ||= OpenSSL::SSL::VERIFY_NONE if Rails.env.development? 
-  config.omniauth :magento, ENTER_YOUR_MAGENTO_CONSUMER_KEY, ENTER_YOUR_MAGENTO_CONSUMER_SECRET, { :client_options =>  { :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
+  config.omniauth :magento,
+    "ENTER_YOUR_MAGENTO_CONSUMER_KEY",
+    "ENTER_YOUR_MAGENTO_CONSUMER_SECRET",
+    { :client_options => { :site => "ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH" } }
   # example:
   # config.omniauth :magento, "12a3", "45e6", { :client_options =>  { :site => "http://localhost/magento" } }  
 ```
 
-* Make sure you have the columns `first_name`, `last_name`, `magento_id` and `email` in your `User` table
-* Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
-* Add / replace this line in your `routes.rb` `devise_for :users, :controllers => { :omniauth_callbacks => "users/omniauth_callbacks" }`. This will be called once Magento has successfully authorized and returns to the Rails app.
+* optional: If you want to use the Admin API (as opposed to the Customer API), you need to overwrite the default `authorize_path` like so:
+
+```
+{ :client_options => { :authorize_path => "/admin/oauth_authorize", :site => ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH } }
+```
+
 * In your folder `controllers`, create a subfolder `users`
-* In that subfolder `app/controllers/users/`, create a file `omniauth_callbacks_controller.rb` with the following code (from Devise wiki linked above):
+* In that subfolder `app/controllers/users/`, create a file `omniauth_callbacks_controller.rb` with the following code:
 
 ```
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
@@ -51,7 +70,19 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 end
 ```
 
-* Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and to contain the `find_for_magento_oauth` method (from Devise wiki linked above)
+#### User model & table
+
+Here's an example of useful Magento information you can store in your `User` table once you have created these columns:
+* `email`
+* `first_name`
+* `last_name`
+* `magento_id`
+* `magento_token`
+* `magento_secret`
+
+Optional: You might want to encrypt `magento_token` and `magento_secret` with the `attr_encrypted` gem for example (requires renaming `magento_token` to `encrypted_magento_token` and `magento_secret` to `encrypted_magento_secret`).
+
+Set up your User model to be omniauthable `:omniauthable, :omniauth_providers => [:magento]` and create a method to save retrieved information after successfully authenticating.
 
 ```
 class User < ActiveRecord::Base  
@@ -60,20 +91,32 @@ class User < ActiveRecord::Base
          :omniauthable, :omniauth_providers => [:magento]  
 
   def self.find_for_magento_oauth(auth, signed_in_resource=nil)
-    user = User.find_by(magento_id: auth.uid)
-    unless user
+    user = User.find_by(email: auth.info.email)
+    if !user
       user = User.create!(
         first_name: auth.info.first_name,                           
         last_name:  auth.info.last_name,
         magento_id: auth.uid,
+        magento_token: auth.credentials.token,
+        magento_secret: auth.credentials.secret,
         email:      auth.info.email,
         password:   Devise.friendly_token[0,20]
       )
-    end
+    else
+      user.update!(
+        magento_id: auth.uid,
+        magento_token: auth.credentials.token,
+        magento_secret: auth.credentials.secret
+      )
+    end    
     user
   end         
 end
 ```
+
+#### Link to start authentication
+
+Add this line to your view `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 
 ### Authenticating
 
@@ -83,4 +126,32 @@ end
 * In your Rails app, go to the view where you pasted this line `<%= link_to "Sign in with Magento", user_omniauth_authorize_path(:magento) %>`
 * Click on the link
 * You now should be directed to a Magento view where you are prompted to authorize access to the Magento user account
-* Once you have confirmed, you should get logged into Rails and redirected to the callback URL specified above. The User model should also create a database entry when the user logs in for the first time.
+* Once you have confirmed, you should get logged into Rails and redirected to the Rails callback URL specified above. The user should now have `magento_id`, `magento_token` and `magento_secret` stored.
+
+### Making API calls
+
+* Create a class that uses `magento_token` and `magento_secret` to do API calls for instance in `lib/magento_inspector.rb`. Example:
+```
+class MagentoInspector
+  require "oauth"
+  require "omniauth"
+  require "multi_json"
+
+  def initialize
+    @access_token = prepare_access_token(current_user) # or pass user in initialize method 
+    @response = MultiJson.decode(@access_token.get("/api/rest/customers").body) # or pass query in initialize method, make sure privileges and attributes are enabled for query (see section at top)
+  end
+
+private
+
+  # from http://behindtechlines.com/2011/08/using-the-tumblr-api-v2-on-rails-with-omniauth/
+  def prepare_access_token(user)
+    consumer = OAuth::Consumer.new("ENTER_YOUR_MAGENTO_CONSUMER_KEY", "ENTER_YOUR_MAGENTO_CONSUMER_SECRET", {:site => "ENTER_YOUR_MAGENTO_URL_WITHOUT_TRAILING_SLASH"})
+    token_hash = {:oauth_token => user.magento_token, :oauth_token_secret => user.magento_secret}
+    access_token = OAuth::AccessToken.from_hash(consumer, token_hash)
+  end
+end
+```
+* Make sure Rails loads files in the folder where this class is placed. For the `lib` folder, put this in `config/application.rb`: `config.autoload_paths += Dir["#{config.root}/lib/**/"]`
+* Perform query `MagentoInspector.new`
+* Extend class to suit your needs
