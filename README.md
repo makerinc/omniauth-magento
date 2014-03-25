@@ -106,7 +106,11 @@ class User < ActiveRecord::Base
     # create new user if user details are known (not available through Admin API)
     elsif authenticated_through_customer_api?(auth)
       user = User.find_by(email: auth.info.email)
-      create_user_with_magento_data(auth)
+      if user
+        update_user_with_magento_data(auth, user)
+      else
+        create_user_with_magento_data(auth)
+      end
     # log authentication details from Magento if user details are not known (not signed in and authenticated through Admin API)
     else 
       puts "MAGENTO_TOKEN: #{magento_token}"
