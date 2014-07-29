@@ -22,7 +22,7 @@ For the Customer API: In the Magento Admin backend, go to `System > Web Services
 
 For the Admin API: In the Magento Admin backend, go to `System > Web Services > REST Attributes`, select `Admin`, and tick `Email`, `First name` and `Last name` under `Customer` > `Read`. Add more attributes as needed.
 
-#### Attributes
+#### Roles
 
 Only for the Admin API: In the Magento Admin backend, go to `System > Permissions > Users`, search for user who will be using this API, click on user, click on `User Role` and make sure `Administrator` is selected, click on `REST Role` and make sure `Admin` is selected.
 
