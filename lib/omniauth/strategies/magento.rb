@@ -12,36 +12,36 @@ module OmniAuth
         :access_token_path  => "/oauth/token"
       }
             
-      # when colling Customer (not Admin) API, Magento returns user credentials for logged in Magento user
+      # when calling Customer (not Admin) API, Magento returns user credentials for logged in Magento user
       # these credentials can then be used to create a new user in the Rails app
       # won't work with Admin API since /customers will return all customers
 
+      def customer_role_auth?
+        options.client_options.authorize_path == "/oauth/authorize"
+      end
+
+      def customer_info_hash
+        return {} unless raw_info.try(:values).try(:first).present?
+        {
+          'first_name' => raw_info.values.first["firstname"],
+          'last_name' => raw_info.values.first["lastname"],
+          'email' => raw_info.values.first["email"]            
+        }
+      end
+
       uid do
-        if not options.client_options.authorize_path == "/admin/oauth_authorize"
-          raw_info.keys.first.to_i
-        else
-          {}
-        end
+        customer_role_auth? ? raw_info.try(:keys).try(:first).try(:to_i) : {}
       end      
 
       # set additional info
       info do
-        if not options.client_options.authorize_path == "/admin/oauth_authorize"        
-          {
-            'first_name' => raw_info.values.first["firstname"],
-            'last_name' => raw_info.values.first["lastname"],
-            'email' => raw_info.values.first["email"]            
-          }
-        else
-          {}
-        end
+        customer_role_auth? ? customer_info_hash : {}
       end
 
       # get info about current user
       def raw_info
-        if not options.client_options.authorize_path == "/admin/oauth_authorize"        
-          @raw_info ||= MultiJson.decode(access_token.get('/api/rest/customers').body)
-        end
+        return unless customer_role_auth?
+        @raw_info ||= MultiJson.decode(access_token.get('/api/rest/customers').body)
       end              
     end
   end
